@@ -13,7 +13,7 @@ app.post('/gemini', async (req, res) => {
             return res.status(400).json({ error: { message: "Faltan el prompt o la API key." } });
         }
 
-        // Usamos exactamente el modelo que Google acaba de exigir en tu error
+        // Forzamos directamente el modelo que exige tu cuenta actual
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
