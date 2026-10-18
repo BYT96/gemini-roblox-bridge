@@ -27,4 +27,4 @@ app.post('/gemini', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Activo en puerto ${PORT}`));A
+app.listen(PORT, () => console.log(`Activo en puerto ${PORT}`));
