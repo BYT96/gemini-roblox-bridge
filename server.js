@@ -13,8 +13,25 @@ app.post('/gemini', async (req, res) => {
             return res.status(400).json({ error: { message: "Faltan el prompt o la API key." } });
         }
 
-        // Probemos con el modelo base gemini-1.0-pro que es el más antiguo y compatible con llaves de Google AI Studio
-        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`;
+        // 1. Primero consultamos qué modelos soporta tu API key exactamente
+        const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+        const listRes = await fetch(listUrl);
+        const listData = await listRes.json();
+
+        let targetModel = "models/gemini-1.5-flash"; // Por defecto
+
+        if (listData.models) {
+            // Buscamos el primer modelo disponible que sirva para generar contenido
+            const found = listData.models.find(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"));
+            if (found) {
+                targetModel = found.name; // Ej: "models/gemini-1.5-flash" o "models/gemini-1.5-pro"
+            }
+        }
+
+        console.log("Modelo seleccionado automáticamente:", targetModel);
+
+        // 2. Ejecutamos la petición con el modelo que sabemos que sí acepta tu key
+        const url = `https://generativelanguage.googleapis.com/v1beta/${targetModel}:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: 'POST',
@@ -25,14 +42,10 @@ app.post('/gemini', async (req, res) => {
         });
 
         const data = await response.json();
-        
-        // Imprimimos en la consola de Render la respuesta completa de Google para ver qué pasa
-        console.log("Respuesta de Google:", JSON.stringify(data));
-
         res.json(data);
 
     } catch (error) {
-        console.error("Error en el servidor:", error);
+        console.error("Error:", error);
         res.status(500).json({ error: { message: error.message } });
     }
 });
