@@ -13,8 +13,8 @@ app.post('/gemini', async (req, res) => {
             return res.status(400).json({ error: { message: "Faltan el prompt o la API key." } });
         }
 
-        // Usamos el modelo v1beta optimizado para texto plano que acepta cualquier key estándar
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+        // Usamos la API v1 con el nombre exacto oficial: gemini-1.5-flash
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: 'POST',
