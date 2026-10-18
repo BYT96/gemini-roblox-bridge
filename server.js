@@ -13,8 +13,8 @@ app.post('/gemini', async (req, res) => {
             return res.status(400).json({ error: { message: "Faltan el prompt o la API key." } });
         }
 
-        // Usamos la API estable v1 con gemini-pro para evitar errores de modelos no encontrados
-       const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        // Usamos el modelo estándar actual con la API v1
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: 'POST',
@@ -26,7 +26,7 @@ app.post('/gemini', async (req, res) => {
 
         const data = await response.json();
         
-        // Devolvemos la respuesta tal cual al plugin de Roblox
+        // Si por alguna razón da error de modelo, devolvemos el texto completo para que lo leas en la consola
         res.json(data);
 
     } catch (error) {
