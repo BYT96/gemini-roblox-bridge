@@ -13,25 +13,8 @@ app.post('/gemini', async (req, res) => {
             return res.status(400).json({ error: { message: "Faltan el prompt o la API key." } });
         }
 
-        // 1. Primero consultamos qué modelos soporta tu API key exactamente
-        const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
-        const listRes = await fetch(listUrl);
-        const listData = await listRes.json();
-
-        let targetModel = "models/gemini-1.5-flash"; // Por defecto
-
-        if (listData.models) {
-            // Buscamos el primer modelo disponible que sirva para generar contenido
-            const found = listData.models.find(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"));
-            if (found) {
-                targetModel = found.name; // Ej: "models/gemini-1.5-flash" o "models/gemini-1.5-pro"
-            }
-        }
-
-        console.log("Modelo seleccionado automáticamente:", targetModel);
-
-        // 2. Ejecutamos la petición con el modelo que sabemos que sí acepta tu key
-        const url = `https://generativelanguage.googleapis.com/v1beta/${targetModel}:generateContent?key=${apiKey}`;
+        // Usamos exactamente el modelo que Google acaba de exigir en tu error
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: 'POST',
