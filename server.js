@@ -13,8 +13,9 @@ app.post('/gemini', async (req, res) => {
             return res.status(400).json({ error: { message: "Faltan el prompt o la API key." } });
         }
 
-        // Usamos el modelo estándar actual con la API v1
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        // Usamos gemini-pro con v1beta, que es el endpoint clásico más compatible con keys estándar
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`;
+
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -24,8 +25,6 @@ app.post('/gemini', async (req, res) => {
         });
 
         const data = await response.json();
-        
-        // Si por alguna razón da error de modelo, devolvemos el texto completo para que lo leas en la consola
         res.json(data);
 
     } catch (error) {
