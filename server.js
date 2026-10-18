@@ -13,8 +13,8 @@ app.post('/gemini', async (req, res) => {
             return res.status(400).json({ error: { message: "Faltan el prompt o la API key." } });
         }
 
-        // Usamos la API v1 con el nombre exacto oficial: gemini-1.5-flash
-        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        // Probemos con el modelo base gemini-1.0-pro que es el más antiguo y compatible con llaves de Google AI Studio
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`;
 
         const response = await fetch(url, {
             method: 'POST',
@@ -25,9 +25,14 @@ app.post('/gemini', async (req, res) => {
         });
 
         const data = await response.json();
+        
+        // Imprimimos en la consola de Render la respuesta completa de Google para ver qué pasa
+        console.log("Respuesta de Google:", JSON.stringify(data));
+
         res.json(data);
 
     } catch (error) {
+        console.error("Error en el servidor:", error);
         res.status(500).json({ error: { message: error.message } });
     }
 });
